@@ -1,6 +1,5 @@
 import turtle
-import player
-import barrier
+import player  # Ensure this is your player.py file with Player and Barrier classes
 from tkinter import *
 
 # Function to center labels
@@ -35,6 +34,18 @@ def start_game():
     # Create the barrier
     barrier1 = barrier.Barrier(gif_file=r"C:\\Users\\Asus\\Downloads\\electric_1.gif", position=(0, -200))
 
+    # Create maze (optional)
+    maze = turtle.Turtle()
+    maze.penup()
+    maze.pensize(2)
+    maze.goto(360, 210)
+    maze.pendown()
+    maze.goto(360, -210)
+    maze.goto(-360, -210)
+    maze.goto(-360, 210)
+    maze.goto(360, 210)
+    maze.hideturtle()
+
     # Create and position robot
     robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\roboti.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
@@ -45,8 +56,23 @@ def start_game():
     sc.onkey(robot.go_right, "Right")  # Move right
     sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
-    # Start checking for collisions
+    # Start the gravity and jump updates
+    robot.update_jump()
 
+    def check_collisions():
+        if robot.check_collision(barrier1):
+            print("Level Failed")
+            restart_level()  # Restart the level on collision
+        else:
+            print("No collision")  # Debugging
+
+        turtle.Screen().ontimer(check_collisions, 100)
+
+    check_collisions()  # Start checking for collisions
+
+def restart_level():
+    turtle.clearscreen()  # Clear the screen
+    start_game()  # Restart the level
 
 # Function to open a new window for options
 def open_options():
@@ -85,18 +111,15 @@ window.update()
 window_width = window.winfo_width()
 
 # Create buttons and bind functions
-button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
-                 command=start_game)
+button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=start_game)
 button2.place(x=center_label(button2, window_width), y=200)
 button2.bind("<Enter>", lambda e: highlight_label(button2))
 
-button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
-                 command=open_options)
+button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=open_options)
 button1.place(x=center_label(button1, window_width), y=300)
 button1.bind("<Enter>", lambda e: highlight_label(button1))
 
-button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
-                command=exit_game)
+button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=exit_game)
 button.place(x=center_label(button, window_width), y=400)
 button.bind("<Enter>", lambda e: highlight_label(button))
 
