@@ -62,3 +62,4 @@ class Player:
     def check_collision(self, barrier):
         # Check for collision with the barrier
         return self.t.distance(barrier.t) < 20  # Adjust threshold as necessary
+#comment
