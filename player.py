@@ -1,5 +1,5 @@
 import turtle
-import barrier
+
 class Player:
     def __init__(self, gif_file=r"C:\\Users\\Asus\\Downloads\\roboti.gif", boundaries=None):
         # Register the GIF file as a turtle shape
@@ -23,12 +23,12 @@ class Player:
 
     def go_left(self):
         new_x = self.t.xcor() - self.speed  # Calculate the new x-coordinate
-        if self.boundaries is None or new_x >= self.boundaries['left']+10:  # Check if within left boundary
+        if self.boundaries is None or new_x >= self.boundaries['left'] + 10:  # Check if within left boundary
             self.t.setx(new_x)  # Move left
 
     def go_right(self):
         new_x = self.t.xcor() + self.speed  # Calculate the new x-coordinate
-        if self.boundaries is None or new_x <= self.boundaries['right']-10:  # Check if within right boundary
+        if self.boundaries is None or new_x <= self.boundaries['right'] - 10:  # Check if within right boundary
             self.t.setx(new_x)  # Move right
 
     def jump(self):
@@ -58,7 +58,3 @@ class Player:
 
     def set_speed(self, speed):
         self.speed = speed  # Update player speed
-
-    def check_collision(self, barrier):
-        # Check for collision with the barrier
-        return self.t.distance(barrier.t) < 20  # Adjust threshold as necessary

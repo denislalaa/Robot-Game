@@ -3,13 +3,11 @@ import player
 import barrier
 from tkinter import *
 
-
 # Function to center labels
 def center_label(label, window_width):
     label_width = label.winfo_reqwidth()
     x_position = (window_width - label_width) // 2
     return x_position
-
 
 # Function to highlight labels on hover
 def highlight_label(label):
@@ -17,15 +15,8 @@ def highlight_label(label):
     label.config(bg="white")
     label.after(200, lambda: label.config(bg=original_color))
 
-
-# Global variable for game state
-gameplay = 'idle'
-
-
 # Function to start the first level
 def start_game():
-    global gameplay  # Use the global variable for gameplay
-
     window.withdraw()  # Hide the Tkinter window
     print("Starting Level 1...")  # Debugging
 
@@ -44,18 +35,6 @@ def start_game():
     # Create the barrier
     barrier1 = barrier.Barrier(gif_file=r"C:\\Users\\Asus\\Downloads\\electric_1.gif", position=(0, -200))
 
-    # Create maze (optional)
-    maze = turtle.Turtle()
-    maze.penup()
-    maze.pensize(2)
-    maze.goto(360, 210)
-    maze.pendown()
-    maze.goto(360, -210)
-    maze.goto(-360, -210)
-    maze.goto(-360, 210)
-    maze.goto(360, 210)
-    maze.hideturtle()
-
     # Create and position robot
     robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\roboti.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
@@ -66,26 +45,20 @@ def start_game():
     sc.onkey(robot.go_right, "Right")  # Move right
     sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
-    # Start managing game state and collisions
-    manage_game_state(robot, barrier1)  # Start managing game state and collisions
+    # Start checking for collisions
+    turtle.Screen().ontimer(lambda: check_collision(robot), 100)  # Check for collision every 100 ms
 
+# Function to check collision with specified coordinates
+def check_collision(robot):
+    # Define the coordinates where the player should be teleported back
+    teleport_coordinates = [(-50, -50), (50, -50)]  # Adjust these as needed
 
-def manage_game_state(robot, barrier1):
-    global gameplay  # Access the global variable
-    if gameplay == 'active':
-        robot.update_jump()  # Update the jump mechanics
-        check_collision(robot.t, barrier1)  # Check for collision with the electric barrier
-
-    turtle.Screen().ontimer(lambda: manage_game_state(robot, barrier1), 100)  # Check every 100 ms
-
-
-# Function to check collision with the electric barrier
-def check_collision(robot, barrier1):
-    # Check if the robot's x-coordinate is close to the barrier's x boundaries
-    if (barrier1.xcor() - 50 < robot.xcor() < barrier1.xcor() + 50) and (robot.ycor() <= barrier1.ycor()):
-        print("Collision detected! Teleporting...")  # Debugging line
-        robot.goto(-330, -190)  # Reset to initial position if it touches the barrier
-
+    # Check if the robot is close to any of the teleport coordinates
+    for x, y in teleport_coordinates:
+        if abs(robot.t.xcor() - x) < 20 and abs(robot.t.ycor() - y) < 20:  # Adjust threshold as necessary
+            print("Collision detected! Teleporting...")  # Debugging line
+            robot.t.goto(-330, -190)  # Reset to initial position if it touches the barrier
+            break  # Exit the loop after teleporting
 
 # Function to open a new window for options
 def open_options():
@@ -104,12 +77,10 @@ def open_options():
 
     Button(options_window, text="Save", command=save_options).pack(pady=10)
 
-
 # Function to exit the game
 def exit_game():
     turtle.bye()  # Close the turtle window
     window.quit()  # Close the Tkinter window
-
 
 # Create the main window
 window = Tk()
@@ -127,7 +98,7 @@ window_width = window.winfo_width()
 
 # Create buttons and bind functions
 button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
-                 command=lambda: start_game())
+                 command=start_game)
 button2.place(x=center_label(button2, window_width), y=200)
 button2.bind("<Enter>", lambda e: highlight_label(button2))
 

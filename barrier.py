@@ -1,4 +1,5 @@
 import turtle
+
 class Barrier:
     def __init__(self, gif_file=r"C:\\Users\\Asus\\Downloads\\electric_1.gif", position=(-100, -200)):
         turtle.register_shape(gif_file)
