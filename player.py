@@ -56,11 +56,13 @@ class Player:
         # Schedule the next update
         turtle.Screen().ontimer(self.update_jump, 20)
 
-    def set_speed(self, speed):
-        self.speed = speed  # Update player speed
+    def check_collision(self, barrier):
+        # Example collision detection logic
+        return self.t.distance(barrier.t) < 50  # Adjust threshold as needed
+
 
 class Barrier:
-    def __init__(self, gif_file=r"C:\\Users\\Asus\\Downloads\\electric_1.gif", position=(-100, -200)):
+    def __init__(self, gif_file=r"C:\\Users\\Asus\\Downloads\\electric_1.gif", position=(0, -200)):
         turtle.register_shape(gif_file)
         self.t = turtle.Turtle()
         self.t.shape(gif_file)
