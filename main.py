@@ -46,19 +46,7 @@ def start_game():
     sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
     # Start checking for collisions
-    turtle.Screen().ontimer(lambda: check_collision(robot), 100)  # Check for collision every 100 ms
 
-# Function to check collision with specified coordinates
-def check_collision(robot):
-    # Define the coordinates where the player should be teleported back
-    teleport_coordinates = [(-50, -50), (50, -50)]  # Adjust these as needed
-
-    # Check if the robot is close to any of the teleport coordinates
-    for x, y in teleport_coordinates:
-        if abs(robot.t.xcor() - x) < 20 and abs(robot.t.ycor() - y) < 20:  # Adjust threshold as necessary
-            print("Collision detected! Teleporting...")  # Debugging line
-            robot.t.goto(-330, -190)  # Reset to initial position if it touches the barrier
-            break  # Exit the loop after teleporting
 
 # Function to open a new window for options
 def open_options():
