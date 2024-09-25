@@ -9,6 +9,7 @@ def center_label(label, window_width):
     x_position = (window_width - label_width) // 2
     return x_position
 #comment
+#"2nd comment
 # Function to highlight labels on hover
 def highlight_label(label):
     original_color = label.cget("bg")
