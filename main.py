@@ -38,7 +38,7 @@ def start_game():
     }
 
     # Create the barrier
-    barrier1 = barrier.Barrier(gif_file=r"C:\\Users\\Asus\\Downloads\\electric_1.gif", position=(0, -200))
+    barrier1 = barrier.Barrier(gif_file=r".\\assets\\electric_1.gif", position=(0, -200))
 
     # Create maze (optional)
     maze = turtle.Turtle()
@@ -53,7 +53,7 @@ def start_game():
     maze.hideturtle()
 
     # Create and position robot
-    robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\roboti.gif", boundaries=boundaries)
+    robot = player.Player(gif_file=r".\\assets\\robot.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
 
     # Set up keyboard bindings
