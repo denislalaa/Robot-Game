@@ -51,7 +51,7 @@ def start_game():
     maze.hideturtle()
 
     # Create and position robot
-    robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\roboti.gif", boundaries=boundaries)
+    robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\robot.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
 
     # Set up keyboard bindings
