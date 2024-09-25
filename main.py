@@ -3,11 +3,13 @@ import player
 import barrier
 from tkinter import *
 
+
 # Function to center labels
 def center_label(label, window_width):
     label_width = label.winfo_reqwidth()
     x_position = (window_width - label_width) // 2
     return x_position
+
 
 # Function to highlight labels on hover
 def highlight_label(label):
@@ -15,8 +17,10 @@ def highlight_label(label):
     label.config(bg="white")
     label.after(200, lambda: label.config(bg=original_color))
 
+
 # Global variable for game state
 gameplay = 'idle'
+
 
 # Function to start the first level
 def start_game():
@@ -62,27 +66,18 @@ def start_game():
     sc.onkey(robot.go_right, "Right")  # Move right
     sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
-    # Function to handle game state changes
-    def on_return():
-        global gameplay
-        if gameplay == 'game_over':
-            robot.t.goto(-330, -190)  # Reset robot to starting position
-            gameplay = 'idle'
-        elif gameplay == 'idle':
-            gameplay = 'active'
-        elif gameplay == 'active':
-            gameplay = 'paused'
-        elif gameplay == 'paused':
-            gameplay = 'active'
+    # Start managing game state and collisions
+    manage_game_state(robot, barrier1)  # Start managing game state and collisions
 
-    sc.onkey(on_return, "Return")  # Bind the Return key to change game state
 
-    # Game loop
-    while True:
-        if gameplay == 'active':
-            robot.update_jump()  # Update the jump mechanics
-            check_collision(robot.t, barrier1)  # Check for collision with the electric barrier
-        sc.update()  # Update the screen
+def manage_game_state(robot, barrier1):
+    global gameplay  # Access the global variable
+    if gameplay == 'active':
+        robot.update_jump()  # Update the jump mechanics
+        check_collision(robot.t, barrier1)  # Check for collision with the electric barrier
+
+    turtle.Screen().ontimer(lambda: manage_game_state(robot, barrier1), 100)  # Check every 100 ms
+
 
 # Function to check collision with the electric barrier
 def check_collision(robot, barrier1):
@@ -90,6 +85,7 @@ def check_collision(robot, barrier1):
     if (barrier1.xcor() - 50 < robot.xcor() < barrier1.xcor() + 50) and (robot.ycor() <= barrier1.ycor()):
         print("Collision detected! Teleporting...")  # Debugging line
         robot.goto(-330, -190)  # Reset to initial position if it touches the barrier
+
 
 # Function to open a new window for options
 def open_options():
@@ -108,10 +104,12 @@ def open_options():
 
     Button(options_window, text="Save", command=save_options).pack(pady=10)
 
+
 # Function to exit the game
 def exit_game():
     turtle.bye()  # Close the turtle window
     window.quit()  # Close the Tkinter window
+
 
 # Create the main window
 window = Tk()
@@ -128,15 +126,18 @@ window.update()
 window_width = window.winfo_width()
 
 # Create buttons and bind functions
-button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=start_game)
+button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
+                 command=lambda: start_game())
 button2.place(x=center_label(button2, window_width), y=200)
 button2.bind("<Enter>", lambda e: highlight_label(button2))
 
-button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=open_options)
+button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
+                 command=open_options)
 button1.place(x=center_label(button1, window_width), y=300)
 button1.bind("<Enter>", lambda e: highlight_label(button1))
 
-button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=exit_game)
+button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
+                command=exit_game)
 button.place(x=center_label(button, window_width), y=400)
 button.bind("<Enter>", lambda e: highlight_label(button))
 
