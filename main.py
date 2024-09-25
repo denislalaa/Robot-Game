@@ -1,5 +1,9 @@
 import turtle
-import player  # Ensure this is your player.py file with Player and Barrier classes
+
+import barrier
+import player
+
+# Ensure this is your player.py file with Player and Barrier classes
 from tkinter import *
 
 # Function to center labels
@@ -32,7 +36,7 @@ def start_game():
     }
 
     # Create the barrier
-    barrier1 = barrier.Barrier(gif_file=r"C:\\Users\\Asus\\Downloads\\electric_1.gif", position=(0, -200))
+    barrier1 = barrier.Barrier(gif_file=r".\\assets\\electric_1.gif", position=(0, -200))
 
     # Create maze (optional)
     maze = turtle.Turtle()
@@ -47,7 +51,7 @@ def start_game():
     maze.hideturtle()
 
     # Create and position robot
-    robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\roboti.gif", boundaries=boundaries)
+    robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
 
     # Set up keyboard bindings
@@ -57,14 +61,14 @@ def start_game():
     sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
     # Start the gravity and jump updates
+
     robot.update_jump()
 
     def check_collisions():
         if robot.check_collision(barrier1):
             print("Level Failed")
-            restart_level()  # Restart the level on collision
-        else:
-            print("No collision")  # Debugging
+            robot.t.goto(-330, -190) # Restart the level on collision
+
 
         turtle.Screen().ontimer(check_collisions, 100)
 

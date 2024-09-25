@@ -62,7 +62,8 @@ class Player:
 
 
 class Barrier:
-    def __init__(self, gif_file=r"C:\\Users\\Asus\\Downloads\\electric_1.gif", position=(0, -200)):
+    def __init__(self, gif_file=r".\\assets\\electric_1.gif", position=(0, -200)):
+
         turtle.register_shape(gif_file)
         self.t = turtle.Turtle()
         self.t.shape(gif_file)
