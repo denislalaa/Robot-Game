@@ -8,10 +8,7 @@ def center_label(label, window_width):
     label_width = label.winfo_reqwidth()
     x_position = (window_width - label_width) // 2
     return x_position
-#comment
-#"2nd comment
-#co
-#comment
+
 # Function to highlight labels on hover
 def highlight_label(label):
     original_color = label.cget("bg")
@@ -23,22 +20,19 @@ gameplay = 'idle'
 
 # Function to start the first level
 def start_game():
-    global gameplay  # Use the global variable for gameplay
+    global gameplay
 
     window.withdraw()  # Hide the Tkinter window
-    print("Starting Level 1...")  # Debugging
+    print("Starting Level 1...")
 
     # Setup the turtle screen
     sc = turtle.Screen()
     sc.title("Level 1")
     sc.setup(width=1200, height=600)
-    sc.bgcolor("white")  # Set a background color to ensure visibility
+    sc.bgcolor("white")
 
     # Define boundaries for the player
-    boundaries = {
-        'left': -360,
-        'right': 360,
-    }
+    boundaries = {'left': -360, 'right': 360}
 
     # Create the barrier
     barrier1 = barrier.Barrier(gif_file=r".\\assets\\electric_1.gif", position=(0, -200))
@@ -57,13 +51,13 @@ def start_game():
 
     # Create and position robot
     robot = player.Player(gif_file=r".\\assets\\robot.gif", boundaries=boundaries)
-    robot.t.goto(-330, -190)  # Set robot's starting position
+    robot.t.goto(-330, -190)
 
     # Set up keyboard bindings
     sc.listen()
-    sc.onkey(robot.go_left, "Left")  # Move left
-    sc.onkey(robot.go_right, "Right")  # Move right
-    sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
+    sc.onkey(robot.go_left, "Left")
+    sc.onkey(robot.go_right, "Right")
+    sc.onkey(robot.jump, "space")
 
     # Function to handle game state changes
     def on_return():
@@ -80,18 +74,19 @@ def start_game():
 
     sc.onkey(on_return, "Return")  # Bind the Return key to change game state
 
-    # Game loop
-    while True:
+    # Game loop using turtle's ontimer instead of while loop
+    def game_loop():
         if gameplay == 'active':
             robot.update_jump()  # Update the jump mechanics
             check_collision(robot.t, barrier1)  # Check for collision with the electric barrier
-        sc.update()  # Update the screen
+        sc.ontimer(game_loop, 50)  # Run the loop every 50 milliseconds
+
+    game_loop()  # Start the game loop
 
 # Function to check collision with the electric barrier
 def check_collision(robot, barrier1):
-    # Check if the robot's x-coordinate is close to the barrier's x boundaries
     if (barrier1.xcor() - 50 < robot.xcor() < barrier1.xcor() + 50) and (robot.ycor() <= barrier1.ycor()):
-        print("Collision detected! Teleporting...")  # Debugging line
+        print("Collision detected! Teleporting...")
         robot.goto(-330, -190)  # Reset to initial position if it touches the barrier
 
 # Function to open a new window for options
@@ -119,8 +114,6 @@ def exit_game():
 # Create the main window
 window = Tk()
 window.title("Circuit Runner")
-
-# Enable fullscreen mode
 window.attributes("-fullscreen", True)
 
 # Bind the Escape key to exit fullscreen mode
@@ -143,5 +136,4 @@ button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#1f3659', f
 button.place(x=center_label(button, window_width), y=400)
 button.bind("<Enter>", lambda e: highlight_label(button))
 
-# Start the Tkinter main loop
 window.mainloop()
