@@ -102,7 +102,7 @@ def start_game():
         port_top = player.Barrier(gif_file=r".\\assets\\port2.gif", position=(-330, 30))
         electric_1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
 
-
+        global door_level_2  # Define the door for level 2
         box = player.Barrier(gif_file=r".\\assets\\box.gif", position=(0, 30))  # Box on the second floor
 
         # Continue with the rest of the function...
@@ -119,7 +119,7 @@ def start_game():
         # Create and position the robot
         robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
         robot.t.goto(-330, -190)
-        global door_level_2  # Define the door for level 2
+
         door_level_2 = player.Barrier(gif_file=r".\\assets\\door_.gif", position=(330, 55))
 
         # Function to check if robot has reached the door in Level 2
