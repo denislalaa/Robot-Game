@@ -93,8 +93,8 @@ def start_game():
         maze.goto(360, 0)
         maze.hideturtle()
 
-
-
+        # Add box obstacle on the second floor
+        box_obstacle = player.Box(gif_file=r".\\assets\\box.gif", position=(0, 30))  # Adjust position as needed
 
         port_bottom = player.Barrier(gif_file=r".\\assets\\port1.gif", position=(330, -190))
         port_top = player.Barrier(gif_file=r".\\assets\\port2.gif", position=(-330, 30))
