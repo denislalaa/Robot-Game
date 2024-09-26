@@ -1,6 +1,4 @@
 import turtle
-
-import barrier
 import player
 
 # Ensure this is your player.py file with Player and Barrier classes
@@ -36,7 +34,7 @@ def start_game():
     }
 
     # Create the barrier
-    barrier1 = barrier.Barrier(gif_file=r".\\assets\\electric_1.gif", position=(0, -200))
+    barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
 
     # Create maze (optional)
     maze = turtle.Turtle()
@@ -52,7 +50,7 @@ def start_game():
 
     # Create and position
 
-    robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\robot.gif", boundaries=boundaries)
+    robot = player.Player(gif_file=r"assets\\roboti.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
 
     # Set up keyboard bindings
@@ -73,11 +71,9 @@ def start_game():
 
         turtle.Screen().ontimer(check_collisions, 100)
 
-    check_collisions()  # Start checking for collisions
+    check_collisions()
 
-def restart_level():
-    turtle.clearscreen()  # Clear the screen
-    start_game()  # Restart the level
+
 
 # Function to open a new window for options
 def open_options():
