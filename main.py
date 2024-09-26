@@ -29,8 +29,8 @@ def start_game():
     # Setup the turtle screen
     sc = turtle.Screen()
     sc.title("Level 1")
-    sc.setup(width=1200, height=600)
-    sc.bgcolor("white")  # Set a background color to ensure visibility
+    sc.setup(width=800, height=600)
+    sc.bgpic("background_1.png")  # Set the background image
 
     # Define boundaries for the player
     boundaries = {
@@ -64,14 +64,12 @@ def start_game():
     sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
     # Start the gravity and jump updates
-
     robot.update_jump()
 
     def check_collisions():
         if robot.check_collision(barrier1):
             print("Level Failed")
-            robot.t.goto(-330, -190) # Restart the level on collision
-
+            robot.t.goto(-330, -190)  # Restart the level on collision
 
         turtle.Screen().ontimer(check_collisions, 100)
 
