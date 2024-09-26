@@ -1,39 +1,35 @@
 import turtle
+import pygame
 import player
-import barrier
+# Ensure this is your player.py file with Player and Barrier classes
 from tkinter import *
+
+
+
+volume_muted = False
 
 # Function to center labels
 def center_label(label, window_width):
     label_width = label.winfo_reqwidth()
     x_position = (window_width - label_width) // 2
     return x_position
-#comment
-#Ca bot
-#"2nd comment
-#co
-#comment
+
 # Function to highlight labels on hover
 def highlight_label(label):
     original_color = label.cget("bg")
     label.config(bg="white")
     label.after(200, lambda: label.config(bg=original_color))
 
-# Global variable for game state
-gameplay = 'idle'
-
 # Function to start the first level
 def start_game():
-    global gameplay  # Use the global variable for gameplay
-
     window.withdraw()  # Hide the Tkinter window
     print("Starting Level 1...")  # Debugging
 
     # Setup the turtle screen
     sc = turtle.Screen()
     sc.title("Level 1")
-    sc.setup(width=1200, height=600)
-    sc.bgcolor("white")  # Set a background color to ensure visibility
+    sc.setup(width=800, height=600)
+    sc.bgpic("background_1.png")  # Set the background image
 
     # Define boundaries for the player
     boundaries = {
@@ -57,7 +53,7 @@ def start_game():
     maze.hideturtle()
 
     # Create and position robot
-    robot = player.Player(gif_file=r".\\assets\\robot.gif", boundaries=boundaries)
+    robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\robot.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
 
     # Set up keyboard bindings
@@ -66,34 +62,21 @@ def start_game():
     sc.onkey(robot.go_right, "Right")  # Move right
     sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
-    # Function to handle game state changes
-    def on_return():
-        global gameplay
-        if gameplay == 'game_over':
-            robot.t.goto(-330, -190)  # Reset robot to starting position
-            gameplay = 'idle'
-        elif gameplay == 'idle':
-            gameplay = 'active'
-        elif gameplay == 'active':
-            gameplay = 'paused'
-        elif gameplay == 'paused':
-            gameplay = 'active'
+    # Start the gravity and jump updates
 
-    sc.onkey(on_return, "Return")  # Bind the Return key to change game state
+    robot.update_jump()
 
-    # Game loop
-    while True:
-        if gameplay == 'active':
-            robot.update_jump()  # Update the jump mechanics
-            check_collision(robot.t, barrier1)  # Check for collision with the electric barrier
-        sc.update()  # Update the screen
+    def check_collisions():
+        if robot.check_collision(barrier1):
+            print("Level Failed")
+            robot.t.goto(-330, -190)  # Restart the level on collision
 
-# Function to check collision with the electric barrier
-def check_collision(robot, barrier1):
-    # Check if the robot's x-coordinate is close to the barrier's x boundaries
-    if (barrier1.xcor() - 50 < robot.xcor() < barrier1.xcor() + 50) and (robot.ycor() <= barrier1.ycor()):
-        print("Collision detected! Teleporting...")  # Debugging line
-        robot.goto(-330, -190)  # Reset to initial position if it touches the barrier
+
+        turtle.Screen().ontimer(check_collisions, 100)
+
+    check_collisions()
+
+
 
 # Function to open a new window for options
 def open_options():
@@ -117,19 +100,50 @@ def exit_game():
     turtle.bye()  # Close the turtle window
     window.quit()  # Close the Tkinter window
 
+
+def volume_down():
+    global volume_muted
+    if volume_muted:
+        pygame.mixer.music.set_volume(1.0)  # Rikthejmë volumin
+        volume_muted = False  # Ndryshojmë gjendjen në të kundërt
+    else:
+        pygame.mixer.music.set_volume(0.0)  # Ulim volumin
+        volume_muted = True
+
+
 # Create the main window
 window = Tk()
 window.title("Circuit Runner")
+window.geometry('800x800')
 
-# Enable fullscreen mode
-window.attributes("-fullscreen", True)
+
 
 # Bind the Escape key to exit fullscreen mode
 window.bind("<Escape>", lambda e: window.attributes("-fullscreen", False))
 
+
+
+# Ngarkojmë foton e sfondit
+background_image = PhotoImage(file="background.png")
+background_label = Label(window, image=background_image)
+background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+# Ngarkojmë ikonën e muzikës dhe e vendosim në këndin e siperm djathtas
+music_image = PhotoImage(file="music.png")
+music_button = Button(window, image=music_image, bg='#1f3659')  # Mund të vendosësh sfondin për të kombinuar me dritaren
+music_button.place(x=700, y=50)  # Pozicionohet në këndin e poshtëm djathtas
+music_button.bind('<Enter>', lambda e: highlight_label(music_button))
+music_button.bind('<Button-1>', lambda e: volume_down())
+
+# Vendosim muziken ne bg duke perdorur efektet e gatshme te pygame
+pygame.mixer.init()
+pygame.mixer.music.load("game_music.ogg")
+pygame.mixer.music.play(-1)
+
 # Update window size
 window.update()
 window_width = window.winfo_width()
+
 
 # Create buttons and bind functions
 button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=start_game)
