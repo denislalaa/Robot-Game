@@ -2,6 +2,7 @@ import turtle
 import pygame
 import player
 from tkinter import *
+from PIL import Image, ImageTk
 
 volume_muted = False
 
@@ -26,11 +27,13 @@ def start_game():
     window.withdraw()  # Hide the Tkinter window
     print("Starting Level 1...")  # Debugging
 
+
+
     # Setup the turtle screen
     sc = turtle.Screen()
     sc.title("Level 1")
     sc.setup(width=800, height=600)
-    sc.bgpic("background_1.png")  # Set the background image
+    sc.bgpic("background1.png")  # Set the background image
 
     # Define boundaries for the player
     boundaries = {
@@ -71,11 +74,16 @@ def start_game():
     def go_to_level_2():
         global level
         level = 2  # Update level to 2
-        sc.clearscreen()
-        sc.bgcolor("lightblue")
-        sc.title("Niveli 2")
 
-        # First floor boundary
+        # Create a new Turtle screen and set its properties
+        sc = turtle.Screen()
+        sc.clearscreen()
+        sc.title("Level 2")
+        sc.setup(width=800, height=600)  # Set up the window size to match the image size
+
+
+        sc.bgpic("bg_2.gif")  # Load the resized background image
+        sc.update()  # Update the screen to reflect the changes
         maze = turtle.Turtle()
         maze.penup()
         maze.pensize(2)
@@ -90,6 +98,7 @@ def start_game():
 
         # Draw the second floor line (horizontal line inside the first floor)
         maze.penup()
+        maze.color("white")
         maze.goto(-360, 0)  # Starting point of the line
         maze.pendown()
         maze.goto(360, 0)  # End point of the line
@@ -131,6 +140,8 @@ def start_game():
 
 # Global variable to store player speed
 player_speed = 5  # Default speed
+
+
 
 # Function to open a new window for options
 def open_options():
@@ -186,7 +197,7 @@ background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 # Load music icon and place it in the top right corner
 music_image = PhotoImage(file="music.png")
-music_button = Button(window, image=music_image, bg='#1f3659')
+music_button = Button(window, image=music_image, bg='#262d5c')
 music_button.place(x=700, y=50)
 music_button.bind('<Enter>', lambda e: highlight_label(music_button))
 music_button.bind('<Button-1>', lambda e: volume_down())
@@ -201,15 +212,15 @@ window.update()
 window_width = window.winfo_width()
 
 # Create buttons and bind functions
-button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=start_game)
+button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center", command=start_game)
 button2.place(x=center_label(button2, window_width), y=200)
 button2.bind("<Enter>", lambda e: highlight_label(button2))
 
-button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=open_options)
+button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center", command=open_options)
 button1.place(x=center_label(button1, window_width), y=300)
 button1.bind("<Enter>", lambda e: highlight_label(button1))
 
-button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=exit_game)
+button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center", command=exit_game)
 button.place(x=center_label(button, window_width), y=400)
 button.bind("<Enter>", lambda e: highlight_label(button))
 
