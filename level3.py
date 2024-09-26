@@ -3,6 +3,15 @@ import pygame
 import player
 from tkinter import *
 
+# Setup the turtle screen
+    sc = turtle.Screen()
+    sc.title("Level 1")
+    sc.setup(width=800, height=600)
+    sc.bgpic("background_1.png")  # Set the background image
+
+
+
+
 # Function to move to the next level (Level 3)
 def go_to_level_3():
     global level
