@@ -50,7 +50,8 @@ def start_game():
     maze.goto(360, 210)
     maze.hideturtle()
 
-    # Create and position robot
+    # Create and position
+
     robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\robot.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
 
