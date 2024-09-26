@@ -73,74 +73,50 @@ def start_game():
     # Function to move to level 2
     def go_to_level_2():
         global level
-        level = 2  # Kalon në nivelin 2
-        sc.clearscreen()
-        sc.bgcolor("lightblue")
-        sc.title("Niveli 2")
+        level = 2  # Update level to 2
 
-        # Kati i parë dhe vendosja e pengesave
+        # Create a new Turtle screen and set its properties
+        sc = turtle.Screen()
+        sc.clearscreen()
+        sc.title("Level 2")
+        sc.setup(width=800, height=600)  # Set up the window size to match the image size
+
+
+        sc.bgpic("bg_2.gif")  # Load the resized background image
+        sc.update()  # Update the screen to reflect the changes
         maze = turtle.Turtle()
         maze.penup()
         maze.pensize(2)
+
+        # Draw the first floor (outer rectangle)
         maze.goto(360, 210)
         maze.pendown()
         maze.goto(360, -210)
         maze.goto(-360, -210)
         maze.goto(-360, 210)
         maze.goto(360, 210)
+
+        # Draw the second floor line (horizontal line inside the first floor)
         maze.penup()
-        maze.goto(-360, 0)
+        maze.color("white")
+        maze.goto(-360, 0)  # Starting point of the line
         maze.pendown()
-        maze.goto(360, 0)
+        maze.goto(360, 0)  # End point of the line
+
         maze.hideturtle()
 
-        # Vendos teleportet dhe robotin
-        port_bottom = player.Barrier(gif_file=r".\\assets\\port1.gif", position=(330, -190))
-        port_top = player.Barrier(gif_file=r".\\assets\\port2.gif", position=(-330, 30))
-
+        # Reposition the robot for level 2
         robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
-        robot.t.goto(-330, -190)
+        robot.t.goto(-330, -190)  # Set robot's starting position
 
-        electric_barrier = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -180))
-        wall = player.Barrier(gif_file=r".\\assets\\wall.gif", position=(0, 10))
-
-        # Funksionet për teleportimin lart dhe poshtë
-        def teleport_up():
-            robot.t.goto(-330, 10)
-            robot.ground_level = 0
-            sc.onkeypress(None, "Up")
-
-        def teleport_down():
-            robot.t.goto(330, -190)
-            robot.ground_level = -190
-            sc.onkeypress(None, "Down")
-
-        # Funksion për të lëvizur pengesën elektrike
-        def move_electric_barrier():
-            x = electric_barrier.t.xcor()
-            if x >= 100:
-                electric_barrier.t.setx(x - 5)
-            elif x <= -100:
-                electric_barrier.t.setx(x + 5)
-            sc.ontimer(move_electric_barrier, 50)
-
-        move_electric_barrier()
-
-        # Funksion për të kontrolluar teleportin
-        def check_teleport():
-            if robot.t.distance(port_bottom.t) < 30:
-                sc.onkeypress(teleport_up, "Up")
-            elif robot.t.distance(port_top.t) < 30:
-                sc.onkeypress(teleport_down, "Down")
-            sc.ontimer(check_teleport, 100)
-
-        # Vendos tastierën për nivelin e dytë
+        # Set up keyboard bindings
         sc.listen()
-        sc.onkeypress(robot.go_left, "Left")
-        sc.onkeypress(robot.go_right, "Right")
-        sc.onkeypress(robot.jump, "space")
+        sc.onkeypress(robot.go_left, "Left")  # Move left
+        sc.onkeypress(robot.go_right, "Right")  # Move right
+        sc.onkeypress(robot.jump, "space")  # Jump when spacebar is pressed
+
+        # Start the gravity and jump updates
         robot.update_jump()
-        check_teleport()
 
     # Function to check if robot has reached the door
     def check_door():
