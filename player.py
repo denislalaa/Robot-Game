@@ -1,7 +1,7 @@
 import turtle
 
 class Player:
-    def __init__(self, gif_file=r"C:\\Users\\Asus\\Downloads\\roboti.gif", boundaries=None):
+    def __init__(self, gif_file=r"assets\\roboti.gif", boundaries=None):
         # Register the GIF file as a turtle shape
         turtle.register_shape(gif_file)
         self.t = turtle.Turtle()
@@ -9,11 +9,11 @@ class Player:
         self.t.penup()  # Avoid leaving a trail
         self.t.speed(0)  # Fastest turtle speed
         self.points = 0
-        self.speed = 15  # Movement speed
-        self.jump_height = 100  # Max height of the jump
+        self.speed = 20  # Movement speed
+        self.jump_height = 150  # Max height of the jump
         self.gravity = 3  # Gravity effect
         self.is_jumping = False  # Jumping status
-        self.jump_velocity = 25  # Jump speed
+        self.jump_velocity = 30  # Jump speed
         self.velocity_y = 0  # Player's vertical velocity
         self.ground_level = -190  # Ground level Y-coordinate
         self.boundaries = boundaries  # Boundaries of the playable area

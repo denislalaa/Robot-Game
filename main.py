@@ -64,6 +64,7 @@ def start_game():
     sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
     # Start the gravity and jump updates
+
     robot.update_jump()
 
     def check_collisions():
@@ -71,13 +72,12 @@ def start_game():
             print("Level Failed")
             robot.t.goto(-330, -190)  # Restart the level on collision
 
+
         turtle.Screen().ontimer(check_collisions, 100)
 
-    check_collisions()  # Start checking for collisions
+    check_collisions()
 
-def restart_level():
-    turtle.clearscreen()  # Clear the screen
-    start_game()  # Restart the level
+
 
 # Function to open a new window for options
 def open_options():
