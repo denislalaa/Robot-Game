@@ -1,6 +1,5 @@
 import turtle
 import pygame
-import barrier
 import player
 # Ensure this is your player.py file with Player and Barrier classes
 from tkinter import *
