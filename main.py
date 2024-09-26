@@ -1,179 +1,171 @@
 import turtle
+import pygame
 import player
-import barrier
-
+# Ensure this is your player.py file with Player and Barrier classes
 from tkinter import *
 
-# Funksioni për qendrim të etiketave
+
+
+volume_muted = False
+
+# Function to center labels
 def center_label(label, window_width):
     label_width = label.winfo_reqwidth()
     x_position = (window_width - label_width) // 2
     return x_position
 
-# Funksioni për të theksuar etiketat gjatë hover
+# Function to highlight labels on hover
 def highlight_label(label):
     original_color = label.cget("bg")
     label.config(bg="white")
     label.after(200, lambda: label.config(bg=original_color))
 
-# Variablat globale për gjendjen e lojës
-gameplay = 'idle'
-
-# Funksioni për të nisur nivelin e parë
+# Function to start the first level
 def start_game():
-    global gameplay
-    window.withdraw()  # Fshi dritaren Tkinter
-    gameplay = 'active'  # Aktivizo lojën
-    print("Duke nisur Nivelin 1...")
+    window.withdraw()  # Hide the Tkinter window
+    print("Starting Level 1...")  # Debugging
 
-    # Konfigurimi i ekranit turtle
+    # Setup the turtle screen
     sc = turtle.Screen()
-    sc.title("Nivel 1")
-    sc.setup(width=1200, height=600)
-    sc.bgcolor("white")
+    sc.title("Level 1")
+    sc.setup(width=800, height=600)
+    sc.bgpic("background_1.png")  # Set the background image
 
-    # Kufijtë për lojtarin
+    # Define boundaries for the player
     boundaries = {
         'left': -360,
         'right': 360,
     }
 
-    # Regjistro imazhet GIF
-    turtle.register_shape(r".\\assets\\ghost.gif")
-    turtle.register_shape(r".\\assets\\robot.gif")
+    # Create the barrier
+    barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
+    door_=player.Barrier(gif_file=r".\\assets\\door_.gif",position=(330, -155))
+    # Create maze (optional)
+    maze = turtle.Turtle()
+    maze.penup()
+    maze.pensize(2)
+    maze.goto(360, 210)
+    maze.pendown()
+    maze.goto(360, -210)
+    maze.goto(-360, -210)
+    maze.goto(-360, 210)
+    maze.goto(360, 210)
+    maze.hideturtle()
 
-    # Krijo barrierën dhe derën
-    barrier1 = barrier.Barrier(gif_file=r".\\assets\\electric_1.gif", position=(0, -200))
-    door = barrier.Barrier(gif_file=r".\\assets\\door.gif", position=(350, -190))
+    # Create and position robot
+    robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
+    robot.t.goto(-330, -190)  # Set robot's starting position
 
-    # Krijo fantazmën
-    ghost = turtle.Turtle()
-    ghost.shape(r".\\assets\\ghost.gif")
-    ghost.penup()
-    ghost.hideturtle()
-
-    # Krijo dhe poziciono robotin
-    robot = player.Player(gif_file=r".\\assets\\robot.gif", boundaries=boundaries)
-    robot.t.goto(-330, -190)
-
-    # Konfigurimi i lidhjeve të tastierës
+    # Set up keyboard bindings
     sc.listen()
-    sc.onkey(robot.go_left, "Left")
-    sc.onkey(robot.go_right, "Right")
-    sc.onkey(robot.jump, "space")  # Sigurohuni që kërcimi është aktiv
+    sc.onkey(robot.go_left, "Left")  # Move left
+    sc.onkey(robot.go_right, "Right")  # Move right
+    sc.onkey(robot.jump, "space")  # Jump when spacebar is pressed
 
-    # Loop i lojës
-    while True:
-        if gameplay == 'active':
-            robot.update_jump()  # Përditëso pozitat e robotit
-            if check_collision(robot.t, barrier1, ghost):  # Kontrollo përplasjen me barrierën
-                display_lose_message()  # Shfaq mesazhin e humbjes
-            check_door(robot.t, door)  # Kontrollo nëse robot arriti derën
-        sc.update()
+    # Start the gravity and jump updates
 
-# Funksioni për të kontrolluar përplasjen me barrierën elektrike
-def check_collision(robot, barrier1, ghost):
-    if robot.distance(barrier1.t) < 30:  # Kontrollo distancën për përplasjen
-        print("Përplasje e zbuluar! Ju humbët!")  # Linja për debugging
-        ghost.goto(robot.xcor(), robot.ycor())  # Vendos fantazmën në pozitat e robotit
-        ghost.showturtle()  # Trego fantazmën
-        return True
-    return False
+    robot.update_jump()
 
-# Funksioni për të shfaqur mesazhin e humbjes
-def display_lose_message():
-    global gameplay
-    gameplay = 'paused'  # Ndalo lojën
+    def check_collisions():
+        if robot.check_collision(barrier1):
+            print("Level Failed")
+            robot.t.goto(-330, -190)  # Restart the level on collision
 
-    # Krijo mesazhin e humbjes
-    lose_message = turtle.Turtle()
-    lose_message.hideturtle()
-    lose_message.penup()
-    lose_message.color("red")
-    lose_message.goto(0, 0)  # Qendro në mes
-    lose_message.write("JU HUMBËT", align="center", font=("Arial", 36, "bold"))
 
-# Funksioni për të kontrolluar nëse lojtari arrin derën
-def check_door(robot, door):
-    if robot.distance(door.t) < 20:  # Kontrollo nëse lojtari është afër derës
-        print("Robot arriti derën! Kalimi në nivelin e dytë...")
-        go_to_level_2()  # Thirri funksionin që kalon në nivelin e dytë
+        turtle.Screen().ontimer(check_collisions, 100)
 
-# Funksioni për të kaluar në Nivelin 2
-def go_to_level_2():
-    sc = turtle.Screen()
-    sc.clearscreen()  # Pastrimi i ekranit
-    sc.bgcolor("lightblue")  # Ngjyra e sfondit për Nivelin 2
-    sc.title("Nivel 2")
+    check_collisions()
 
-    # Krijo kufijtë për nivelin e dytë
-    boundaries = {
-        'left': -360,
-        'right': 360,
-    }
 
-    # Krijo barrierat dhe robotin për nivelin e dytë
-    barrier2 = barrier.Barrier(gif_file=r".\\assets\\electric_1.gif", position=(100, -200))
-    robot = player.Player(gif_file=r".\\assets\\robot.gif", boundaries=boundaries)
-    robot.t.goto(-330, -190)  # Vendosja e pozitatit të robotit për nivelin e dytë
 
-    # Shtoni komandat për lëvizjen e robotit
-    sc.listen()
-    sc.onkey(robot.go_left, "Left")
-    sc.onkey(robot.go_right, "Right")
-    sc.onkey(robot.jump, "space")
-
-# Funksioni për të hapur një dritare të re për opsione
+# Function to open a new window for options
 def open_options():
     options_window = Toplevel(window)
-    options_window.title("Opsione")
+    options_window.title("Options")
     options_window.geometry("400x400")
 
-    Label(options_window, text="Rregullo Shpejtësinë e Lojtarit", font=("Comic Sans MS", 18)).pack(pady=20)
+    Label(options_window, text="Adjust Player Speed", font=("Comic Sans MS", 18)).pack(pady=20)
 
     speed_var = IntVar(value=5)
     Scale(options_window, from_=1, to=10, orient=HORIZONTAL, variable=speed_var).pack(pady=20)
 
     def save_options():
-        print(f"Shpejtësia e lojtarit është vendosur në: {speed_var.get()}")
+        print(f"Player speed set to: {speed_var.get()}")
         options_window.destroy()
 
-    Button(options_window, text="Ruaj", command=save_options).pack(pady=10)
+    Button(options_window, text="Save", command=save_options).pack(pady=10)
 
-# Funksioni për të dalë nga loja
+# Function to exit the game
 def exit_game():
-    turtle.bye()  # Mbylle dritaren e turtle
-    window.quit()  # Mbylle dritaren Tkinter
+    turtle.bye()  # Close the turtle window
+    window.quit()  # Close the Tkinter window
 
-# Krijo dritaren kryesore
+
+def volume_down():
+    global volume_muted
+    if volume_muted:
+        pygame.mixer.music.set_volume(1.0)  # Rikthejmë volumin
+        volume_muted = False  # Ndryshojmë gjendjen në të kundërt
+    else:
+        pygame.mixer.music.set_volume(0.0)  # Ulim volumin
+        volume_muted = True
+def go_to_level_2():
+    sc=turtle.Screen()
+    sc.clearscreen()
+    sc.bgcolor("lightblue")
+    sc.title("Niveli 2 ")
+
+def check_door(roboti, door_):
+    if roboti.distance(door_.t) < 20:
+        print("Roboti arriti deren")
+        go_to_level_2()
+
+# Create the main window
 window = Tk()
 window.title("Circuit Runner")
+window.geometry('800x800')
 
-# Aktivizo modin e ekranit të plotë
-window.attributes("-fullscreen", True)
 
-# Lidhu çelësi Escape për të dalë nga moda e plotë
+
+# Bind the Escape key to exit fullscreen mode
 window.bind("<Escape>", lambda e: window.attributes("-fullscreen", False))
 
-# Përditëso madhësinë e dritares
+
+
+# Ngarkojmë foton e sfondit
+background_image = PhotoImage(file="background.png")
+background_label = Label(window, image=background_image)
+background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+# Ngarkojmë ikonën e muzikës dhe e vendosim në këndin e siperm djathtas
+music_image = PhotoImage(file="music.png")
+music_button = Button(window, image=music_image, bg='#1f3659')  # Mund të vendosësh sfondin për të kombinuar me dritaren
+music_button.place(x=700, y=50)  # Pozicionohet në këndin e poshtëm djathtas
+music_button.bind('<Enter>', lambda e: highlight_label(music_button))
+music_button.bind('<Button-1>', lambda e: volume_down())
+
+# Vendosim muziken ne bg duke perdorur efektet e gatshme te pygame
+pygame.mixer.init()
+pygame.mixer.music.load("game_music.ogg")
+pygame.mixer.music.play(-1)
+
+# Update window size
 window.update()
 window_width = window.winfo_width()
 
-# Krijo butona dhe lidhu funksionet
-button2 = Button(window, text="Nis", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
-                 command=start_game)
+
+# Create buttons and bind functions
+button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=start_game)
 button2.place(x=center_label(button2, window_width), y=200)
 button2.bind("<Enter>", lambda e: highlight_label(button2))
 
-button1 = Button(window, text="Opsione", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
-                 command=open_options)
+button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=open_options)
 button1.place(x=center_label(button1, window_width), y=300)
 button1.bind("<Enter>", lambda e: highlight_label(button1))
 
-button = Button(window, text="Dal", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center",
-                command=exit_game)
+button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#1f3659', fg='black', compound="center", command=exit_game)
 button.place(x=center_label(button, window_width), y=400)
 button.bind("<Enter>", lambda e: highlight_label(button))
 
-# Filloni loopin kryesor të Tkinter
+# Start the Tkinter main loop
 window.mainloop()
