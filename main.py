@@ -27,8 +27,6 @@ def start_game():
     window.withdraw()  # Hide the Tkinter window
     print("Starting Level 1...")  # Debugging
 
-
-
     # Setup the turtle screen
     sc = turtle.Screen()
     sc.title("Level 1")
@@ -40,12 +38,6 @@ def start_game():
         'left': -360,
         'right': 360,
     }
-
-    # Create the barrier and door
-    barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
-    door_ = player.Barrier(gif_file=r".\\assets\\door_.gif", position=(330, -155))
-
-    # Create maze (optional)
     maze = turtle.Turtle()
     maze.penup()
     maze.pensize(2)
@@ -56,6 +48,10 @@ def start_game():
     maze.goto(-360, 210)
     maze.goto(360, 210)
     maze.hideturtle()
+
+    # Create the barrier and door
+    barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
+    door_ = player.Barrier(gif_file=r".\\assets\\door_.gif", position=(330, -155))
 
     # Create and position robot
     robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
@@ -70,25 +66,116 @@ def start_game():
     # Start the gravity and jump updates
     robot.update_jump()
 
-    # Function to move to level 2
+    # Function to move to the next level (Level 2)
     def go_to_level_2():
         global level
         level = 2  # Update level to 2
 
-        # Create a new Turtle screen and set its properties
-        sc = turtle.Screen()
         sc.clearscreen()
         sc.title("Level 2")
-        sc.setup(width=800, height=600)  # Set up the window size to match the image size
+        sc.setup(width=800, height=600)
+
+        sc.bgpic("bg_2.gif")
+        sc.update()
+
+        maze = turtle.Turtle()
+        maze.penup()
+        maze.pensize(2)
+        maze.goto(360, 210)
+        maze.pendown()
+        maze.goto(360, -210)
+        maze.goto(-360, -210)
+        maze.goto(-360, 210)
+        maze.goto(360, 210)
+        maze.penup()
+        maze.goto(-360, 0)
+        maze.pendown()
+        maze.goto(360, 0)
+        maze.hideturtle()
+
+        port_bottom = player.Barrier(gif_file=r".\\assets\\port1.gif", position=(330, -190))
+        port_top = player.Barrier(gif_file=r".\\assets\\port2.gif", position=(-330, 30))
+        electric_1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
+
+        # Create and position the robot
+        robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
+        robot.t.goto(-330, -190)
+        global door_level_2  # Define the door for level 2
+        door_level_2 = player.Barrier(gif_file=r".\\assets\\door_.gif", position=(330, 55))
+
+        # Function to check if robot has reached the door in Level 2
+
+        def teleport_up():
+            robot.t.goto(-330, 20)
+            robot.ground_level = 30
+            robot.y_speed = 0
+            robot.is_jumping = False
+            print("Teleported Up!")
+
+        def teleport_down():
+            robot.t.goto(330, -190)
+            robot.ground_level = -190
+            robot.y_speed = 0
+            robot.is_jumping = False
+            print("Teleported Down!")
+
+        # Check teleportation zones
+        def check_teleport():
+            if robot.t.distance(port_bottom.t) < 30:
+                sc.onkeypress(teleport_up, "Up")
+            elif robot.t.distance(port_top.t) < 30:
+                sc.onkeypress(teleport_down, "Down")
+            else:
+                sc.onkeypress(None, "Up")
+                sc.onkeypress(None, "Down")
+
+            sc.ontimer(check_teleport, 100)
+
+        # Check if robot touches the barrier
+        def check_barrier_collision():
+            if robot.check_collision(electric_1):
+                print("Touched the barrier! Restarting position...")
+                robot.t.goto(-330, -190)
+
+            sc.ontimer(check_barrier_collision, 100)
+
+        # Check if robot has reached the door to level 3
+        def check_collisions_level_2():
+            check_door_level_2()  # Check if robot has reached the door to level 3
+            check_barrier_collision()  # Check if robot touches any barrier
+
+        sc.listen()
+        sc.onkeypress(robot.go_left, "Left")
+        sc.onkeypress(robot.go_right, "Right")
+        sc.onkeypress(robot.jump, "space")
+
+        check_teleport()
+        check_collisions_level_2()  # Start collision checks for level 2
+
+        robot.update_jump()
 
 
-        sc.bgpic("bg_2.gif")  # Load the resized background image
-        sc.update()  # Update the screen to reflect the changes
+    # Function to move to Level 3
+    def go_to_level_3():
+        global level
+        level = 3  # Update level to 3
+
+        # Setup the turtle screen
+        sc.clearscreen()
+        sc.bgcolor("lightgreen")  # Change background color for Level 3
+        sc.title("Level 3")  # Update title for Level 3
+
+        boundaries = {
+            'left': -360,
+            'right': 360,
+        }
+
+        # Create a turtle for drawing boundaries
         maze = turtle.Turtle()
         maze.penup()
         maze.pensize(2)
 
-        # Draw the first floor (outer rectangle)
+        # Draw the outer rectangle for the first floor
         maze.goto(360, 210)
         maze.pendown()
         maze.goto(360, -210)
@@ -96,18 +183,17 @@ def start_game():
         maze.goto(-360, 210)
         maze.goto(360, 210)
 
-        # Draw the second floor line (horizontal line inside the first floor)
-        maze.penup()
-        maze.color("white")
-        maze.goto(-360, 0)  # Starting point of the line
-        maze.pendown()
-        maze.goto(360, 0)  # End point of the line
+        # Draw the horizontal lines for the floors
+        for i in range(0, 4):
+            maze.penup()
+            maze.goto(-360, 140 * i)
+            maze.pendown()
+            maze.goto(360, 140 * i)
 
-        maze.hideturtle()
+        maze.hideturtle()  # Hide the turtle after drawing
 
-        # Reposition the robot for level 2
-        robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
-        robot.t.goto(-330, -190)  # Set robot's starting position
+        # Reposition the robot for level 3
+        robot.t.goto(-330, 270)  # Set robot's starting position at the third floor
 
         # Set up keyboard bindings
         sc.listen()
@@ -116,27 +202,38 @@ def start_game():
         sc.onkeypress(robot.jump, "space")  # Jump when spacebar is pressed
 
         # Start the gravity and jump updates
-        robot.update_jump()
+        robot.update_jump()  # Ensure the jump function is called
 
-    # Function to check if robot has reached the door
+    # Function to check if robot has reached the door in Level 1
     def check_door():
         if robot.check_collision(door_):  # Check if robot has reached the door
-            print("Roboti arriti te dera")
+            print(f"Robot Position: {robot.t.position()}, Door Position: {door_.t.position()}")
+            print("Reached the door! Moving to Level 2...")
             door_.t.hideturtle()  # Hide the door so it can't be checked again
             go_to_level_2()  # Move to the second level
 
-    # Function to check collisions
+    def check_door_level_2():
+        # Define the door coordinates
+        door_x, door_y = 330, 55
+        distance_threshold = 30  # Define how close the robot needs to be to the door
+
+        # Check the distance between the robot and the door
+        if abs(robot.t.xcor() - door_x) < distance_threshold and abs(robot.t.ycor() - door_y) < distance_threshold:
+            print("Reached the door! Moving to Level 3...")
+            go_to_level_3()  # Move to the third level
+
+    # Function to check collisions in Level 1
     def check_collisions():
-        if level == 1:  # Only check collisions in level 1
-            if robot.check_collision(barrier1):
-                print("Level Failed")
+        if level == 1:
+            if robot.check_collision(barrier1):  # Check if robot touches the barrier
+                print("Touched the barrier! Restarting position...")
                 robot.t.goto(-330, -190)  # Restart the level on collision
             else:
                 check_door()  # Check if robot has reached the door
 
-        turtle.Screen().ontimer(check_collisions, 100)
+        turtle.Screen().ontimer(check_collisions, 100)  # Re-check every 100ms
 
-    check_collisions()
+    check_collisions()  # Start collision checks for level 1
 
 # Global variable to store player speed
 player_speed = 5  # Default speed
