@@ -1,3 +1,8 @@
+import turtle
+import pygame
+import player
+from tkinter import *
+
 # Function to move to level 3
 def go_to_level_3():
     global level
