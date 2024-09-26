@@ -33,7 +33,7 @@ def start_game():
     sc = turtle.Screen()
     sc.title("Level 1")
     sc.setup(width=800, height=600)
-    sc.bgpic("background1.png")  # Set the background image
+    sc.bgpic("bg1.png")  # Set the background image
 
     # Define boundaries for the player
     boundaries = {
