@@ -38,8 +38,8 @@ def start_game():
     }
 
     # Create the barrier
-    barrier1 = barrier.Barrier(gif_file=r".\\assets\\electric_1.gif", position=(0, -200))
-
+    barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
+    door_=player.Barrier(gif_file=r".\\assets\\door_.gif",position=(330, -155))
     # Create maze (optional)
     maze = turtle.Turtle()
     maze.penup()
@@ -53,7 +53,7 @@ def start_game():
     maze.hideturtle()
 
     # Create and position robot
-    robot = player.Player(gif_file=r"C:\\Users\\Asus\\Downloads\\robot.gif", boundaries=boundaries)
+    robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
     robot.t.goto(-330, -190)  # Set robot's starting position
 
     # Set up keyboard bindings
@@ -109,7 +109,16 @@ def volume_down():
     else:
         pygame.mixer.music.set_volume(0.0)  # Ulim volumin
         volume_muted = True
+def go_to_level_2():
+    sc=turtle.Screen()
+    sc.clearscreen()
+    sc.bgcolor("lightblue")
+    sc.title("Niveli 2 ")
 
+def check_door(roboti, door_):
+    if roboti.distance(door_.t) < 20:
+        print("Roboti arriti deren")
+        go_to_level_2()
 
 # Create the main window
 window = Tk()
