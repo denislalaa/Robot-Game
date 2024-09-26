@@ -3,6 +3,9 @@ import pygame
 import player
 from tkinter import *
 
+# List to store doors
+doors = []
+
 
 # Function to move to the next level (Level 3)
 def go_to_level_3():
@@ -14,8 +17,6 @@ def go_to_level_3():
     sc.title("Niveli 3")  # Update title for Level 3
 
     # Setup the turtle screen
-
-    sc.title("Level 3")
     sc.setup(width=800, height=600)
     sc.bgpic("background_1.png")
 
@@ -23,43 +24,43 @@ def go_to_level_3():
         'left': -360,
         'right': 360,
     }
-    barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
-    door_ = player.Barrier(gif_file=r".\\assets\\door_.gif", position=(330, -155))
 
     # Create a turtle for drawing boundaries
     maze = turtle.Turtle()
     maze.penup()
     maze.pensize(2)
-
-    # Draw the outer rectangle for the first floor
-    maze = turtle.Turtle()
-    maze.penup()
-    maze.pensize(2)
-    maze.goto(360, 270)
+    maze.goto(360, 210)
     maze.pendown()
-    maze.goto(360, -270)
-    maze.goto(-360, -270)
-    maze.goto(-360, 270)
-    maze.goto(360, 270)
+    maze.goto(360, -210)
+    maze.goto(-360, -210)
+    maze.goto(-360, 210)
+    maze.goto(360, 210)
     maze.hideturtle()
 
-    # Draw the horizontal line for the first floor
+    # Draw the horizontal lines for the floors
     maze.penup()
-    maze.goto(-360, -90)  # Starting point of the line
+    maze.goto(-360, -70)  # First floor
     maze.pendown()
-    maze.goto(360, -90)  # End point of the line
+    maze.goto(360, -70)
 
-    # Draw the horizontal line for the second floor
     maze.penup()
-    maze.goto(-360, 90)  # Starting point of the line for the second floor
+    maze.goto(-360, 70)  # Second floor
     maze.pendown()
-    maze.goto(360, 90)  # End point of the line for the second floor
+    maze.goto(360, 70)
 
     maze.hideturtle()  # Hide the turtle after drawing
 
+    # Create barriers and doors
+    barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(-180, -200))
+
+    door_positions = [(300, -155), (200, -100)]  # Valid door positions
+    for pos in door_positions:
+        door = player.Barrier(gif_file=r".\\assets\\door_.gif", position=pos)  # Use the correct image for doors
+        doors.append(door)
+
     # Reposition the robot for level 3
     robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
-    robot.t.goto(-330, 270)  # Set robot's starting position at the third floor
+    robot.t.goto(-330, -190)  # Set robot's starting position
 
     # Set up keyboard bindings
     sc.listen()
@@ -69,3 +70,25 @@ def go_to_level_3():
 
     # Start the gravity and jump updates
     robot.update_jump()  # Ensure the jump function is called
+
+
+# Function to check if the robot has reached any door
+def check_doors():
+    for door in doors:
+        if robot.check_collision(door):  # Check collision with each door
+            print("Robot reached a door")
+            door.t.hideturtle()  # Hide the door if it's reached
+            # Handle level transition or other logic here
+            # For example, call the next level function if this is the last door
+            # go_to_next_level()  # Define this function as needed
+
+
+# Function to check all collisions
+def check_collisions():
+    # Include other collision checks if necessary
+    check_doors()  # Check for door collisions
+    turtle.Screen().ontimer(check_collisions, 100)  # Schedule the next check
+
+
+# Start checking for collisions when level 3 is activated
+turtle.Screen().ontimer(check_collisions, 100)
