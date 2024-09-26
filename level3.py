@@ -4,19 +4,18 @@ import player
 from tkinter import *
 
 
-
-
 # Function to move to the next level (Level 3)
 def go_to_level_3():
     global level
+    sc = turtle.Screen()
     level = 3  # Update level to 3
     sc.clearscreen()
     sc.bgcolor("lightgreen")  # Change background color for Level 3
     sc.title("Niveli 3")  # Update title for Level 3
 
     # Setup the turtle screen
-    sc = turtle.Screen()
-    sc.title("Level 1")
+
+    sc.title("Level 3")
     sc.setup(width=800, height=600)
     sc.bgpic("background_1.png")
 
@@ -27,37 +26,34 @@ def go_to_level_3():
     barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
     door_ = player.Barrier(gif_file=r".\\assets\\door_.gif", position=(330, -155))
 
-
     # Create a turtle for drawing boundaries
     maze = turtle.Turtle()
     maze.penup()
     maze.pensize(2)
 
     # Draw the outer rectangle for the first floor
-    maze.goto(360, 210)
+    maze = turtle.Turtle()
+    maze.penup()
+    maze.pensize(2)
+    maze.goto(360, 270)
     maze.pendown()
-    maze.goto(360, -210)
-    maze.goto(-360, -210)
-    maze.goto(-360, 210)
-    maze.goto(360, 210)
+    maze.goto(360, -270)
+    maze.goto(-360, -270)
+    maze.goto(-360, 270)
+    maze.goto(360, 270)
+    maze.hideturtle()
 
     # Draw the horizontal line for the first floor
     maze.penup()
-    maze.goto(-360, 0)  # Starting point of the line
+    maze.goto(-360, -90)  # Starting point of the line
     maze.pendown()
-    maze.goto(360, 0)  # End point of the line
+    maze.goto(360, -90)  # End point of the line
 
     # Draw the horizontal line for the second floor
     maze.penup()
-    maze.goto(-360, 140)  # Starting point of the line for the second floor
+    maze.goto(-360, 90)  # Starting point of the line for the second floor
     maze.pendown()
-    maze.goto(360, 140)  # End point of the line for the second floor
-
-    # Draw the horizontal line for the third floor
-    maze.penup()
-    maze.goto(-360, 280)  # Starting point of the line for the third floor
-    maze.pendown()
-    maze.goto(360, 280)  # End point of the line for the third floor
+    maze.goto(360, 90)  # End point of the line for the second floor
 
     maze.hideturtle()  # Hide the turtle after drawing
 
@@ -73,4 +69,3 @@ def go_to_level_3():
 
     # Start the gravity and jump updates
     robot.update_jump()  # Ensure the jump function is called
-
