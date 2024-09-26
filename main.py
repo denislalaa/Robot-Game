@@ -129,22 +129,32 @@ def start_game():
 
     check_collisions()
 
+# Global variable to store player speed
+player_speed = 5  # Default speed
+
 # Function to open a new window for options
 def open_options():
+    global player_speed  # Access the global player_speed variable
+#Dritarja e window
     options_window = Toplevel(window)
     options_window.title("Options")
     options_window.geometry("400x400")
 
     Label(options_window, text="Adjust Player Speed", font=("Comic Sans MS", 18)).pack(pady=20)
 
-    speed_var = IntVar(value=5)
-    Scale(options_window, from_=1, to=10, orient=HORIZONTAL, variable=speed_var).pack(pady=20)
+    # Initialize the scale with the current player speed
+    speed_var = IntVar(value=player_speed)  # Use the global variable
+    speed_scale = Scale(options_window, from_=1, to=10, orient=HORIZONTAL, variable=speed_var)
+    speed_scale.pack(pady=20)
 
     def save_options():
-        print(f"Player speed set to: {speed_var.get()}")
-        options_window.destroy()
+        global player_speed  # Use the global variable to store the speed
+        player_speed = speed_var.get()  # Update the global player speed
+        print(f"Player speed set to: {player_speed}")
+        options_window.destroy()  # Close the options window
 
     Button(options_window, text="Save", command=save_options).pack(pady=10)
+
 
 # Function to exit the game
 def exit_game():
