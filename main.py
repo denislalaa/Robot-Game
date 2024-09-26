@@ -1,6 +1,7 @@
 import turtle
 import player
 import barrier
+
 from tkinter import *
 
 # Funksioni për qendrim të etiketave
