@@ -3,12 +3,6 @@ import pygame
 import player
 from tkinter import *
 
-# Setup the turtle screen
-    sc = turtle.Screen()
-    sc.title("Level 1")
-    sc.setup(width=800, height=600)
-    sc.bgpic("background_1.png")  # Set the background image
-
 
 
 
@@ -19,6 +13,20 @@ def go_to_level_3():
     sc.clearscreen()
     sc.bgcolor("lightgreen")  # Change background color for Level 3
     sc.title("Niveli 3")  # Update title for Level 3
+
+    # Setup the turtle screen
+    sc = turtle.Screen()
+    sc.title("Level 1")
+    sc.setup(width=800, height=600)
+    sc.bgpic("background_1.png")
+
+    boundaries = {
+        'left': -360,
+        'right': 360,
+    }
+    barrier1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
+    door_ = player.Barrier(gif_file=r".\\assets\\door_.gif", position=(330, -155))
+
 
     # Create a turtle for drawing boundaries
     maze = turtle.Turtle()
