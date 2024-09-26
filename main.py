@@ -6,11 +6,13 @@ from PIL import Image, ImageTk
 
 volume_muted = False
 
+
 # Function to center labels
 def center_label(label, window_width):
     label_width = label.winfo_reqwidth()
     x_position = (window_width - label_width) // 2
     return x_position
+
 
 # Function to highlight labels on hover
 def highlight_label(label):
@@ -18,8 +20,10 @@ def highlight_label(label):
     label.config(bg="white")
     label.after(200, lambda: label.config(bg=original_color))
 
+
 # Global variable to track level
 level = 1
+
 
 # Function to start the first level
 def start_game():
@@ -93,6 +97,21 @@ def start_game():
         maze.goto(360, 0)
         maze.hideturtle()
 
+        # Existing barriers
+        port_bottom = player.Barrier(gif_file=r".\\assets\\port1.gif", position=(330, -190))
+        port_top = player.Barrier(gif_file=r".\\assets\\port2.gif", position=(-330, 30))
+        electric_1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
+
+
+        box = player.Barrier(gif_file=r".\\assets\\box.gif", position=(0, 30))  # Box on the second floor
+
+        # Continue with the rest of the function...
+        robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
+        robot.t.goto(-330, -190)
+        global door_level_2  # Define the door for level 2
+        door_level_2 = player.Barrier(gif_file=r".\\assets\\door_.gif", position=(330, 55))
+
+
         port_bottom = player.Barrier(gif_file=r".\\assets\\port1.gif", position=(330, -190))
         port_top = player.Barrier(gif_file=r".\\assets\\port2.gif", position=(-330, 30))
         electric_1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
@@ -153,7 +172,6 @@ def start_game():
         check_collisions_level_2()  # Start collision checks for level 2
 
         robot.update_jump()
-
 
     # Function to move to Level 3
     def go_to_level_3():
@@ -235,15 +253,15 @@ def start_game():
 
     check_collisions()  # Start collision checks for level 1
 
+
 # Global variable to store player speed
 player_speed = 5  # Default speed
-
 
 
 # Function to open a new window for options
 def open_options():
     global player_speed  # Access the global player_speed variable
-#Dritarja e window
+    # Dritarja e window
     options_window = Toplevel(window)
     options_window.title("Options")
     options_window.geometry("400x400")
@@ -255,7 +273,7 @@ def open_options():
     speed_scale = Scale(options_window, from_=1, to=10, orient=HORIZONTAL, variable=speed_var)
     speed_scale.pack(pady=20)
 
-#Funksion qe te ruaje speed level
+    # Funksion qe te ruaje speed level
     def save_options():
         global player_speed  # Use the global variable to store the speed
         player_speed = speed_var.get()  # Update the global player speed
@@ -270,6 +288,7 @@ def exit_game():
     turtle.bye()  # Close the turtle window
     window.quit()  # Close the Tkinter window
 
+
 def volume_down():
     global volume_muted
     if volume_muted:
@@ -278,6 +297,7 @@ def volume_down():
     else:
         pygame.mixer.music.set_volume(0.0)  # Mute volume
         volume_muted = True
+
 
 # Create the main window
 window = Tk()
@@ -309,15 +329,18 @@ window.update()
 window_width = window.winfo_width()
 
 # Create buttons and bind functions
-button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center", command=start_game)
+button2 = Button(window, text="Start", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center",
+                 command=start_game)
 button2.place(x=center_label(button2, window_width), y=200)
 button2.bind("<Enter>", lambda e: highlight_label(button2))
 
-button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center", command=open_options)
+button1 = Button(window, text="Options", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center",
+                 command=open_options)
 button1.place(x=center_label(button1, window_width), y=300)
 button1.bind("<Enter>", lambda e: highlight_label(button1))
 
-button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center", command=exit_game)
+button = Button(window, text="Exit", font=("Comic Sans MS", 28), bg='#262d5c', fg='black', compound="center",
+                command=exit_game)
 button.place(x=center_label(button, window_width), y=400)
 button.bind("<Enter>", lambda e: highlight_label(button))
 
