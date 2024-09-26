@@ -17,8 +17,12 @@ def highlight_label(label):
     label.config(bg="white")
     label.after(200, lambda: label.config(bg=original_color))
 
+# Global variable to track level
+level = 1
+
 # Function to start the first level
 def start_game():
+    global level
     window.withdraw()  # Hide the Tkinter window
     print("Starting Level 1...")  # Debugging
 
@@ -65,24 +69,61 @@ def start_game():
 
     # Function to move to level 2
     def go_to_level_2():
+        global level
+        level = 2  # Update level to 2
         sc.clearscreen()
         sc.bgcolor("lightblue")
         sc.title("Niveli 2")
-        print("Kaloi në nivelin 2")
+
+        # First floor boundary
+        maze = turtle.Turtle()
+        maze.penup()
+        maze.pensize(2)
+
+        # Draw the first floor (outer rectangle)
+        maze.goto(360, 210)
+        maze.pendown()
+        maze.goto(360, -210)
+        maze.goto(-360, -210)
+        maze.goto(-360, 210)
+        maze.goto(360, 210)
+
+        # Draw the second floor line (horizontal line inside the first floor)
+        maze.penup()
+        maze.goto(-360, 0)  # Starting point of the line
+        maze.pendown()
+        maze.goto(360, 0)  # End point of the line
+
+        maze.hideturtle()
+
+        # Reposition the robot for level 2
+        robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
+        robot.t.goto(-330, -190)  # Set robot's starting position
+
+        # Set up keyboard bindings
+        sc.listen()
+        sc.onkeypress(robot.go_left, "Left")  # Move left
+        sc.onkeypress(robot.go_right, "Right")  # Move right
+        sc.onkeypress(robot.jump, "space")  # Jump when spacebar is pressed
+
+        # Start the gravity and jump updates
+        robot.update_jump()
 
     # Function to check if robot has reached the door
     def check_door():
-        if robot.check_collision(door_):
+        if robot.check_collision(door_):  # Check if robot has reached the door
             print("Roboti arriti te dera")
-            go_to_level_2()
+            door_.t.hideturtle()  # Hide the door so it can't be checked again
+            go_to_level_2()  # Move to the second level
 
     # Function to check collisions
     def check_collisions():
-        if robot.check_collision(barrier1):
-            print("Level Failed")
-            robot.t.goto(-330, -190)  # Restart the level on collision
-        else:
-            check_door()  # Check if robot has reached the door
+        if level == 1:  # Only check collisions in level 1
+            if robot.check_collision(barrier1):
+                print("Level Failed")
+                robot.t.goto(-330, -190)  # Restart the level on collision
+            else:
+                check_door()  # Check if robot has reached the door
 
         turtle.Screen().ontimer(check_collisions, 100)
 
@@ -123,10 +164,10 @@ def exit_game():
 def volume_down():
     global volume_muted
     if volume_muted:
-        pygame.mixer.music.set_volume(1.0)  # Rikthejmë volumin
-        volume_muted = False  # Ndryshojmë gjendjen në të kundërt
+        pygame.mixer.music.set_volume(1.0)  # Reset volume
+        volume_muted = False  # Change state back
     else:
-        pygame.mixer.music.set_volume(0.0)  # Ulim volumin
+        pygame.mixer.music.set_volume(0.0)  # Mute volume
         volume_muted = True
 
 # Create the main window
@@ -137,19 +178,19 @@ window.geometry('800x800')
 # Bind the Escape key to exit fullscreen mode
 window.bind("<Escape>", lambda e: window.attributes("-fullscreen", False))
 
-# Ngarkojmë foton e sfondit
+# Load background image
 background_image = PhotoImage(file="background.png")
 background_label = Label(window, image=background_image)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-# Ngarkojmë ikonën e muzikës dhe e vendosim në këndin e siperm djathtas
+# Load music icon and place it in the top right corner
 music_image = PhotoImage(file="music.png")
 music_button = Button(window, image=music_image, bg='#1f3659')
 music_button.place(x=700, y=50)
 music_button.bind('<Enter>', lambda e: highlight_label(music_button))
 music_button.bind('<Button-1>', lambda e: volume_down())
 
-# Vendosim muziken ne bg duke perdorur efektet e gatshme te pygame
+# Set up background music using pygame
 pygame.mixer.init()
 pygame.mixer.music.load("game_music.ogg")
 pygame.mixer.music.play(-1)
