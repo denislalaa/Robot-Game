@@ -147,6 +147,7 @@ def open_options():
     speed_scale = Scale(options_window, from_=1, to=10, orient=HORIZONTAL, variable=speed_var)
     speed_scale.pack(pady=20)
 
+#Funksion qe te ruaje speed level
     def save_options():
         global player_speed  # Use the global variable to store the speed
         player_speed = speed_var.get()  # Update the global player speed
