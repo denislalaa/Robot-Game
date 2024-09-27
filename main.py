@@ -98,9 +98,6 @@ def start_game():
         maze.goto(360, 0)
         maze.hideturtle()
 
-        # Add box obstacle on the second floor
-        box_obstacle = player.Box(gif_file=r".\\assets\\box.gif", position=(0, 30))  # Adjust position as needed
-
         port_bottom = player.Barrier(gif_file=r".\\assets\\port1.gif", position=(330, -190))
         port_top = player.Barrier(gif_file=r".\\assets\\port2.gif", position=(-330, 30))
         electric_1 = player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(0, -200))
@@ -184,55 +181,111 @@ def start_game():
 
         robot.update_jump()
 
-
-    # Function to move to Level 3
+    # Function to move to the next level (Level 3)
     def go_to_level_3():
         global level
-        level = 3  # Update level to 3
+        global door_
+        global barrier1
+        global robot
+        global barrier2,barrier3
+        global door_level_2,door_level_3,door_level_4
 
-        # Setup the turtle screen
+        level = 3  # Update level to 3
         sc.clearscreen()
         sc.bgcolor("lightgreen")  # Change background color for Level 3
         sc.title("Level 3")  # Update title for Level 3
 
+        # Setup the turtle screen
+        sc.setup(width=800, height=600)
+        sc.bgpic("bg1.png")
+        sc.update()
+
+        # Define boundaries for level 3
         boundaries = {
             'left': -360,
             'right': 360,
         }
 
-        # Create a turtle for drawing boundaries
+        # Draw the maze (only once)
         maze = turtle.Turtle()
         maze.penup()
         maze.pensize(2)
 
-        # Draw the outer rectangle for the first floor
-        maze.goto(360, 210)
+        # Draw the outer rectangle for the entire level
+        maze.goto(360, 280)
         maze.pendown()
         maze.goto(360, -210)
         maze.goto(-360, -210)
-        maze.goto(-360, 210)
-        maze.goto(360, 210)
+        maze.goto(-360, 280)
+        maze.goto(360, 280)
 
-        # Draw the horizontal lines for the floors
-        for i in range(0, 4):
-            maze.penup()
-            maze.goto(-360, 140 * i)
-            maze.pendown()
-            maze.goto(360, 140 * i)
+        # Draw the first-floor boundary line
+        maze.penup()
+        maze.goto(-360, -40)
+        maze.pendown()
+        maze.goto(360, -40)
 
-        maze.hideturtle()  # Hide the turtle after drawing
+        # Draw the second-floor boundary line
+        maze.penup()
+        maze.goto(-360, 110)
+        maze.pendown()
+        maze.goto(360, 110)
 
-        # Reposition the robot for level 3
-        robot.t.goto(-330, 270)  # Set robot's starting position at the third floor
+        maze.hideturtle()  # Hide the turtle after drawing to prevent repeated execution
 
-        # Set up keyboard bindings
+        # Position the robot for level 3
+        robot = player.Player(gif_file=r".\\assets\\roboti.gif", boundaries=boundaries)
+        robot.t.goto(-330, -215)  # Set robot's starting position at the third floor
+        barrier3=player.Barrier(gif_file=r".\\assets\\electric_barrier.gif", position=(-50, 15))
+        barrier2=player.Barrier(gif_file=r".\\assets\\electric_2.gif", position=(0, -200))
+        door_level_2 = player.Barrier(gif_file=r".\\assets\\door2.gif", position=(329, -153))
+        door_level_3= player.Barrier(gif_file=r".\\assets\\door_.gif", position=(-329, 15))
+        door_level_4=player.Barrier(gif_file=r".\\assets\\door3.gif", position=(329, 15))
+        # Set up keyboard bindings for the robot's movement
         sc.listen()
-        sc.onkeypress(robot.go_left, "Left")  # Move left
-        sc.onkeypress(robot.go_right, "Right")  # Move right
-        sc.onkeypress(robot.jump, "space")  # Jump when spacebar is pressed
+        sc.onkeypress(robot.go_left, "Left")
+        sc.onkeypress(robot.go_right, "Right")
+        sc.onkeypress(robot.jump, "space")
 
         # Start the gravity and jump updates
-        robot.update_jump()  # Ensure the jump function is called
+        robot.update_jump()
+        def teleport_up():
+            robot.t.goto(-330, -50)
+            robot.ground_level = -50
+            robot.y_speed = 0
+            robot.is_jumping = False
+            print("Teleported Up!")
+
+        def teleport_down():
+            robot.t.goto(330, -190)
+            robot.ground_level = -190
+            robot.y_speed = 0
+            robot.is_jumping = False
+            print("Teleported Down!")
+
+        # Check teleportation zones
+        def check_teleport():
+            if robot.t.distance(door_level_2.t) < 30:
+                sc.onkeypress(teleport_up, "Up")
+            elif robot.t.distance(door_level_2.t) < 30:
+                sc.onkeypress(teleport_down, "Down")
+            else:
+                sc.onkeypress(None, "Up")
+                sc.onkeypress(None, "Down")
+
+            sc.ontimer(check_teleport, 100)
+        # Check if the robot collides with any obstacles (including barriers)
+        def check_collisions_level_3():
+            if robot.check_collision(barrier1):  # Adjust this as per your level 3 barriers
+                print("Touched the barrier! Restarting position...")
+                robot.t.goto(-330, 270)  # Restart on collision
+
+            # Continue to check for collisions
+            sc.ontimer(check_collisions_level_3, 100)
+
+        # Start checking for collisions in level 3
+        check_collisions_level_3()
+
 
     # Function to check if robot has reached the door in Level 1
     def check_door():
