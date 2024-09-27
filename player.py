@@ -37,18 +37,22 @@ class Player:
             pygame.mixer.Sound(r".\\sound\\jump.wav").play()  # Play jump sound
 
     def update_jump(self):
+        # Apply jump physics if the robot is currently jumping
         if self.is_jumping:
-            self.t.sety(self.t.ycor() + self.velocity_y)
-            self.velocity_y -= self.gravity
+            self.t.sety(self.t.ycor() + self.velocity_y)  # Move up based on current velocity
+            self.velocity_y -= self.gravity  # Decrease velocity due to gravity
 
+            # Check if the robot has landed
             if self.t.ycor() <= self.ground_level:
-                self.t.sety(self.ground_level)
-                self.is_jumping = False
-                self.velocity_y = 0
+                self.t.sety(self.ground_level)  # Set to ground level
+                self.is_jumping = False  # Reset jumping state
+                self.velocity_y = 0  # Reset velocity
 
-        if not self.is_jumping and self.t.ycor() > self.ground_level:
-            self.t.sety(self.t.ycor() - self.gravity)
+        # Apply gravity when not jumping
+        elif self.t.ycor() > self.ground_level:  # Only apply gravity if above ground
+            self.t.sety(self.t.ycor() - self.gravity)  # Move down due to gravity
 
+        # Schedule the next update
         turtle.Screen().ontimer(self.update_jump, 20)
 
     def check_collision(self, barrier):
